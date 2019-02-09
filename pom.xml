@@ -293,6 +293,8 @@
                         <exclude>**/.travis.yml</exclude>
                     <exclude>**/NOW</exclude>
                         <exclude>**/.travis.yml</exclude>
+                    <exclude>**/NOW</exclude>
+                        <exclude>**/.travis.yml</exclude>
                     </excludes>
                 </configuration>
             </plugin>
