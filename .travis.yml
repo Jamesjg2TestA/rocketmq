@@ -25,6 +25,9 @@ before_install:
 - if [ "$TRAVIS_OS_NAME" == "osx" ];        then sed -i '' 's/<gib.enabled>true/<gib.enabled>false/'
   $TRAVIS_BUILD_DIR/pom.xml;        else sed -i 's/<gib.enabled>true/<gib.enabled>false/'
   $TRAVIS_BUILD_DIR/pom.xml;        fi
+- if [ "$TRAVIS_OS_NAME" == "osx" ];        then sed -i '' 's/<gib.enabled>true/<gib.enabled>false/'
+  $TRAVIS_BUILD_DIR/pom.xml;        else sed -i 's/<gib.enabled>true/<gib.enabled>false/'
+  $TRAVIS_BUILD_DIR/pom.xml;        fi
 - find $HOME/CACHE -name .ekstazi | while read line; do du -sh $line;         DIR=$(dirname
   ${line#$HOME/CACHE}); if [[ -d ${DIR#.ekstazi/} ]]; then cp -r $line $DIR; fi; done
 - if [ "$TRAVIS_OS_NAME" == "osx" ];        then sed -i '' 's/<gib.enabled>true/<gib.enabled>false/'
@@ -64,8 +67,12 @@ before_script:
 - if [ "$TRAVIS_OS_NAME" == "osx" ];        then sed -i '' 's/<gib.enabled>false/<gib.enabled>true/'
   $TRAVIS_BUILD_DIR/pom.xml;        else sed -i 's/<gib.enabled>false/<gib.enabled>true/'
   $TRAVIS_BUILD_DIR/pom.xml;        fi
+- if [ "$TRAVIS_OS_NAME" == "osx" ];        then sed -i '' 's/<gib.enabled>false/<gib.enabled>true/'
+  $TRAVIS_BUILD_DIR/pom.xml;        else sed -i 's/<gib.enabled>false/<gib.enabled>true/'
+  $TRAVIS_BUILD_DIR/pom.xml;        fi
 cache:
   directories:
+  - $HOME/CACHE
   - $HOME/CACHE
   - $HOME/CACHE
   - $HOME/CACHE
@@ -74,6 +81,7 @@ cache:
 env:
 - CACHE_MARK=1
 - CACHE_MARK=3
+- CACHE_MARK=1
 - CACHE_MARK=1
 - CACHE_MARK=1
 - CACHE_MARK=1
@@ -86,8 +94,10 @@ matrix:
     - CACHE_MARK=2
     - CACHE_MARK=2
     - CACHE_MARK=2
+    - CACHE_MARK=2
     os: linux
     script:
+    - touch /tmp/NOW;echo SCRIPT_START $(date)
     - touch /tmp/NOW;echo SCRIPT_START $(date)
     - touch /tmp/NOW;echo SCRIPT_START $(date)
     - touch /tmp/NOW;echo SCRIPT_START $(date)
@@ -104,7 +114,10 @@ matrix:
       -name TEST-*.xml -newer /tmp/NOW | wc -l))
     - echo SCRIPT_END $(date);echo TESTNUM $(grep -l "<testcase" $(find $TRAVIS_BUILD_DIR
       -name TEST-*.xml -newer /tmp/NOW | wc -l))
+    - echo SCRIPT_END $(date);echo TESTNUM $(grep -l "<testcase" $(find $TRAVIS_BUILD_DIR
+      -name TEST-*.xml -newer /tmp/NOW | wc -l))
 script:
+- touch /tmp/NOW;echo SCRIPT_START $(date)
 - touch /tmp/NOW;echo SCRIPT_START $(date)
 - touch /tmp/NOW;echo SCRIPT_START $(date)
 - touch /tmp/NOW;echo SCRIPT_START $(date)
@@ -112,6 +125,8 @@ script:
 - touch /tmp/NOW;echo SCRIPT_START $(date)
 - travis_retry mvn -B clean apache-rat:check
 - travis_retry mvn -B package jacoco:report coveralls:report
+- echo SCRIPT_END $(date);echo TESTNUM $(grep -l "<testcase" $(find $TRAVIS_BUILD_DIR
+  -name TEST-*.xml -newer /tmp/NOW | wc -l))
 - echo SCRIPT_END $(date);echo TESTNUM $(grep -l "<testcase" $(find $TRAVIS_BUILD_DIR
   -name TEST-*.xml -newer /tmp/NOW | wc -l))
 - echo SCRIPT_END $(date);echo TESTNUM $(grep -l "<testcase" $(find $TRAVIS_BUILD_DIR
